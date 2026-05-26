@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -10,6 +12,7 @@ import DeleteRowButton from "./DeleteRowButton";
 import UpdateRowButton from "./UpdateRowButton";
 import { cn } from "../lib/utils";
 import { TableIntrospection } from "@/lib/types";
+import CopyableCell from "./CopyableCell";
 
 interface TableDisplayProps {
   tableName: string;
@@ -87,7 +90,7 @@ export default function TableDisplay({
                     columnIndex < columns.length - 1 && "border-r"
                   )}
                 >
-                  {String(row[column])}
+                  <CopyableCell value={String(row[column])} />
                 </TableCell>
               ))}
             </TableRow>
