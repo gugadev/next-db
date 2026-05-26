@@ -6,7 +6,8 @@ import FilterBar from "@/components/FilterBar";
 import SortBar from "@/components/SortBar";
 import QueryControls from "@/components/QueryControls";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTabs } from "@/lib/TabsContext";
 import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
@@ -55,6 +56,20 @@ export default function TablePageClient({
 }: TablePageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { openTab, updateTabHref } = useTabs();
+  const basePath = `/${encodeURIComponent(tableName)}`;
+
+  // Register tab on first open
+  useEffect(() => {
+    openTab(tableName, basePath);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableName]);
+
+  // Keep tab href in sync with current filters/sorts/page
+  useEffect(() => {
+    const qs = searchParams.toString();
+    updateTabHref(tableName, qs ? `${basePath}?${qs}` : basePath);
+  }, [tableName, basePath, searchParams, updateTabHref]);
 
   // Parse initial filters from URL
   const getInitialFilters = (): Filter[] => {
