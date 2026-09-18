@@ -29,6 +29,7 @@ export class PostgreSQLConnection implements DatabaseConnection {
       database: config.database,
       password: config.password,
       port: config.port,
+      ssl: config.ssl ? { rejectUnauthorized: false } : false,
     });
   }
 
@@ -157,7 +158,7 @@ export class PostgreSQLConnection implements DatabaseConnection {
         : `public.${tableName}`;
 
       const columns = Object.keys(data);
-      const values = Object.values(data);
+      const values = Object.values(data).map((v) => (v === "" ? null : v));
       const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
 
       const query = `
@@ -205,7 +206,7 @@ export class PostgreSQLConnection implements DatabaseConnection {
       `;
 
       const values = [
-        ...Object.values(data),
+        ...Object.values(data).map((v) => (v === "" ? null : v)),
         ...Object.values(primaryKeyValues),
       ];
       const result = await client.query(query, values);

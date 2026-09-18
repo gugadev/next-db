@@ -7,6 +7,7 @@ export interface DatabaseConfig {
   database: string;
   username: string;
   password: string;
+  ssl?: boolean;
 }
 
 export interface TableInfo {
